@@ -14,9 +14,13 @@ async function connectDB() {
     console.log(colors.red("hubo un error al conectarse a la BBDD"));
   }
 }
+// levantando servidor
 connectDB();
+// instancia de express
 const server = express();
 
+// leer datos de formularios
+server.use(express.json());
 server.use("/api/products", router);
 
 export default server;
