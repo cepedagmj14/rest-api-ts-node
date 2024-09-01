@@ -18,13 +18,16 @@ export const createProduct = async (req: Request, res: Response) => {
   //     .withMessage("El precio del producto no puede ir vacio")
   //     .run(req);
 
-  let errors = validationResult(req);
-  console.log("errors check", errors);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  //   let errors = validationResult(req);
+  //   console.log("errors check", errors);
+  //   if (!errors.isEmpty()) {
+  //     return res.status(400).json({ errors: errors.array() });
+  //   }
+
+  try {
+    const savedProduct = await Product.create(req.body);
+    res.json({ data: savedProduct });
+  } catch (error) {
+    console.log(error);
   }
-
-  const savedProduct = await Product.create(req.body);
-
-  res.json({ data: savedProduct });
 };
