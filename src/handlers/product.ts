@@ -1,6 +1,17 @@
 import { Request, Response } from "express";
 import Product from "../models/Product.model";
-import { check, validationResult } from "express-validator";
+
+export const getProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.findAll(/* {
+      order: [["id", "DESC"]],
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    } */);
+    res.json({ data: products });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const createProduct = async (req: Request, res: Response) => {
   // validacion en el handler

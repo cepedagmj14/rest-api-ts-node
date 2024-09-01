@@ -1,12 +1,10 @@
 import { Router } from "express";
-import { createProduct } from "./handlers/product";
+import { createProduct, getProducts } from "./handlers/product";
 import { body } from "express-validator";
 import { handleInputErros } from "./middleware";
 const router = Router();
 // routing
-router.get("/", (req, res) => {
-  res.json("desde get");
-});
+router.get("/", getProducts);
 
 router.post(
   "/",
