@@ -101,3 +101,20 @@ export const updateAvailability = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    // 1 primero ver si existe
+    const { id } = req.params;
+
+    const product = await Product.findByPk(id);
+
+    if (!product) {
+      return res.status(404).json({ error: "producto no encontrado" });
+    }
+    await product.destroy();
+    res.json({ data: "producto eliminado" });
+  } catch (error) {
+    console.log(error);
+  }
+};

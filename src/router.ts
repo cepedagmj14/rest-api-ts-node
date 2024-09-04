@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createProduct,
+  deleteProduct,
   getProducts,
   getProductsById,
   updateAvailability,
@@ -58,10 +59,19 @@ router.put(
   updateProduct
 );
 
-router.patch("/:id", updateAvailability);
+router.patch(
+  "/:id",
+  param("id").isInt().withMessage("ID no valido"),
+  handleInputErros,
+  updateAvailability
+);
 
-router.delete("/", (req, res) => {
-  res.json("desde delete");
-});
+router.delete(
+  "/:id",
+
+  param("id").isInt().withMessage("ID no valido"),
+  handleInputErros,
+  deleteProduct
+);
 
 export default router;
