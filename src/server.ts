@@ -8,10 +8,10 @@ async function connectDB() {
   try {
     await db.authenticate();
     db.sync();
-    console.log(colors.magenta("conexion exitosa a la BBDD"));
+    // console.log(colors.magenta("conexion exitosa a la BBDD"));
   } catch (error) {
     // console.log(error);
-    console.log(colors.red("hubo un error al conectarse a la BBDD"));
+    // console.log(colors.red("hubo un error al conectarse a la BBDD"));
   }
 }
 // levantando servidor
@@ -22,5 +22,9 @@ const server = express();
 // leer datos de formularios
 server.use(express.json());
 server.use("/api/products", router);
+
+server.get("/api", (req, res) => {
+  res.json({ msg: "Desde API" });
+});
 
 export default server;
