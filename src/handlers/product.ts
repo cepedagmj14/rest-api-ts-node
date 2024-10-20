@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import Product from "../models/Product.model";
+import { Request, Response } from 'express';
+import Product from '../models/Product.model';
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
@@ -20,7 +20,7 @@ export const getProductsById = async (req: Request, res: Response) => {
     const product = await Product.findByPk(id);
 
     if (!product) {
-      return res.status(404).json({ error: "producto no encontrado" });
+      return res.status(404).json({ error: 'producto no encontrado' });
     }
     res.json({ data: product });
   } catch (error) {
@@ -52,7 +52,7 @@ export const createProduct = async (req: Request, res: Response) => {
 
   try {
     const savedProduct = await Product.create(req.body);
-    res.json({ data: savedProduct });
+    res.status(201).json({ data: savedProduct });
   } catch (error) {
     console.log(error);
   }
@@ -66,7 +66,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     const product = await Product.findByPk(id);
 
     if (!product) {
-      return res.status(404).json({ error: "producto no encontrado" });
+      return res.status(404).json({ error: 'producto no encontrado' });
     }
 
     // 2 actualizar
@@ -86,7 +86,7 @@ export const updateAvailability = async (req: Request, res: Response) => {
     const product = await Product.findByPk(id);
 
     if (!product) {
-      return res.status(404).json({ error: "producto no encontrado" });
+      return res.status(404).json({ error: 'producto no encontrado' });
     }
 
     // 2 actualizar
@@ -110,10 +110,10 @@ export const deleteProduct = async (req: Request, res: Response) => {
     const product = await Product.findByPk(id);
 
     if (!product) {
-      return res.status(404).json({ error: "producto no encontrado" });
+      return res.status(404).json({ error: 'producto no encontrado' });
     }
     await product.destroy();
-    res.json({ data: "producto eliminado" });
+    res.json({ data: 'producto eliminado' });
   } catch (error) {
     console.log(error);
   }
