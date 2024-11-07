@@ -1,5 +1,6 @@
 import request from 'supertest';
-import server from '../../src/server';
+import server, { connectDB } from '../../src/server';
+import db from '../../src/config/db';
 
 describe('POST /api/products', () => {
   it('should display validation errors', async () => {
@@ -91,6 +92,82 @@ describe('GET /api/products/:id', () => {
   test('get a JSON response for a single product', async () => {
     const productoID = 1;
     const response = await request(server).get(`/api/products/${productoID}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('data');
+  });
+});
+
+describe('PUT /api/products/:id', () => {
+  it('should a valid id the url', async () => {
+    const response = await request(server).put(`/api/products/no-valid`).send({
+      name: 'monitor curvo',
+      availability: true,
+      price: 500,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('errors');
+    expect(response.body.errors[0].msg).toBe('ID no valido');
+  });
+
+  it('should display validation error message when updating a product', async () => {
+    const response = await request(server).put('/api/products/1').send({});
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toHaveLength(5);
+    expect(response.body).toHaveProperty('errors');
+    expect(response.status).not.toBe(200);
+    expect(response.body).not.toBe('data');
+  });
+
+  it('should validate that the price is greather tahn 0', async () => {
+    const response = await request(server).put('/api/products/1').send({
+      name: 'monitor curvo',
+      availability: true,
+      price: -500,
+    });
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('errors');
+    expect(response.body.errors).toHaveLength(1);
+    expect(response.body.errors[0].msg).toEqual('Precio no valido');
+    expect(response.status).not.toBe(200);
+    expect(response.body).not.toBe('data');
+  });
+});
+
+describe('DELETE /api/products/:id', () => {
+  it('should check a valid ID', async () => {
+    const response = await request(server).delete('/api/products/not-valid');
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('errors');
+    expect(response.body.errors[0].msg).toBe('ID no valido');
+  });
+
+  it('should return a 404 response for a non-existent product', async () => {
+    const response = await request(server).delete('/api/products/775');
+
+    expect(response.status).toBe(404);
+    expect(response.body.error).toBe('producto no encontrado');
+    expect(response.status).not.toBe(200);
+  });
+
+  it('should delete a product', async () => {
+    const response = await request(server).delete('/api/products/1');
+    expect(response.status).toBe(200);
+    expect(response.body.data).toBe('producto eliminado');
+    expect(response.status).not.toBe(404);
+    expect(response.status).not.toBe(400);
+  });
+});
+
+describe('PATCH /api/products/:id', () => {
+  it('should return a 404 response for a non-existing product', async () => {
+    const response = await request(server).patch('/api/products/4000');
+    expect(response.status).toBe(404);
+    expect(response.body.error).toBe('producto no encontrado');
+  });
+  it('should update product using patch', async () => {
+    const response = await request(server).patch('/api/products/2');
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('data');
